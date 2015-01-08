@@ -1,0 +1,19 @@
+step 0: copy and unzip the folder
+step 1: go to ubuntu software center and install libFox 1.6, libFox1.6-dev 
+step 2: go into msl-2.0.mod/pqp inside msl folder and run make to compile pqp
+step 3: once compiled go inside the pqp/lib folder and run command: "sudo cp libPQP.a /usr/lib/" to add pqp library to where the msl will look for it, notice root password must be entered.
+step 4:  make a soft link to the fox library running the command: sudo ln -s /usr/lib/libFOX-1.6.a /usr/lib/libFOX.a
+
+run command make
+
+if you get the error "/usr/bin/ld: cannot find -lXmu"
+go to buntu software center and install libxmu-dev
+
+if you get the error "/usr/bin/ld: cannot find -lXi"
+go to buntu software center and install libxi-dev
+
+if you get the error "/usr/bin/ld: cannot find -lalleg"
+go to buntu software center and install liballeg4.2-dev and liballeg4.2
+
+anyother question let me know
+Carlos

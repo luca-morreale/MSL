@@ -1,0 +1,6 @@
+mylist contains:Done reading the moving obstacles. 
+Numbodies 0
+ERROR: No robot obstacle files at ./car4
+Failure to connect after 2002 nodes
+Collision Detection Calls: 7332
+Planning Time: 0.47s

@@ -1,0 +1,95 @@
+diff -rau ../msl-2.0.orig/msl-2.0/include/MSL/defs.h include/MSL/defs.h
+--- ../msl-2.0.orig/msl-2.0/include/MSL/defs.h	2010-01-14 15:23:32.000000000 +0000
++++ include/MSL/defs.h	2010-01-14 19:25:25.000000000 +0000
+@@ -52,15 +52,15 @@
+ #ifndef INFINITY
+ #define INFINITY 1.0e40
+ #endif
+-#ifndef sqr
+-#define sqr(x) ((x)*(x))
+-#endif
+-#ifndef min
+-#define min(x,y) ((x<y) ? x : y)
+-#endif
+-#ifndef max
+-#define max(x,y) ((x>y) ? x : y)
+-#endif
++//#ifndef sqr
++//#define sqr(x) ((x)*(x))
++//#endif
++//#ifndef min
++//#define min(x,y) ((x<y) ? x : y)
++//#endif
++//#ifndef max
++//#define max(x,y) ((x>y) ? x : y)
++//#endif
+ 
+ #ifndef MSL_GLOBAL_VARS
+ #define MSL_GLOBAL_VARS
+diff -rau ../msl-2.0.orig/msl-2.0/include/MSL/geomPQP.h include/MSL/geomPQP.h
+--- ../msl-2.0.orig/msl-2.0/include/MSL/geomPQP.h	2010-01-14 15:23:32.000000000 +0000
++++ include/MSL/geomPQP.h	2010-01-14 19:25:25.000000000 +0000
+@@ -47,10 +47,14 @@
+ #ifndef MSL_GEOMPQP_H
+ #define MSL_GEOMPQP_H
+ 
++#undef max
++#undef min
++
+ #include <list>
+ #include <vector>
+ 
+-#include "../../configs/configPQP.h"
++//#include "../../configs/configPQP.h"
++#include <PQP.h>
+ 
+ #include <cstdlib>
+ #include <cstdio>
+diff -rau ../msl-2.0.orig/msl-2.0/include/MSL/guiplanner.h include/MSL/guiplanner.h
+--- ../msl-2.0.orig/msl-2.0/include/MSL/guiplanner.h	2010-01-14 15:23:32.000000000 +0000
++++ include/MSL/guiplanner.h	2010-01-14 19:25:25.000000000 +0000
+@@ -53,8 +53,8 @@
+ #include <sys/stat.h>
+ #include <signal.h>
+ 
+-//#include <fx.h>
+-#include "../../configs/configFOX.h"
++#include <fx.h>
++//#include "../../configs/configFOX.h"
+ 
+ 
+ #include "gui.h"
+@@ -68,7 +68,7 @@
+ 
+ 
+ //A quick fix to solve some FOX version problems. Benjamin
+-// typedef FXMenuBar FXMenubar;
++typedef FXMenuBar FXMenubar;
+ 
+ //! A rendering-independent GUI for the Planner classes
+ 
+@@ -177,6 +177,13 @@
+   void WritePolicy();
+   void DrawGraphs();
+ 
++        /*
++	 *
++         */
++	int mArgc;
++	char** mArgv;
++
++	void setArguments( int argc, char** argv );
+   friend class MSLPlotWindow;
+ };
+ 
+diff -rau ../msl-2.0.orig/msl-2.0/include/MSL/tree.h include/MSL/tree.h
+--- ../msl-2.0.orig/msl-2.0/include/MSL/tree.h	2010-01-14 15:23:32.000000000 +0000
++++ include/MSL/tree.h	2010-01-14 19:25:25.000000000 +0000
+@@ -43,7 +43,6 @@
+ //-------------------------------------------------------------------------
+ 
+ 
+-#
+ #ifndef MSL_TREE_H
+ #define MSL_TREE_H
+ 

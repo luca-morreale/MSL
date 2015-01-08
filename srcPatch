@@ -1,0 +1,634 @@
+diff -rau ../msl-2.0.orig/msl-2.0/src/geomPQP.C src/geomPQP.C
+--- ../msl-2.0.orig/msl-2.0/src/geomPQP.C	2010-01-14 15:23:34.000000000 +0000
++++ src/geomPQP.C	2010-01-14 19:25:25.000000000 +0000
+@@ -42,10 +42,12 @@
+ //
+ //-------------------------------------------------------------------------
+ 
+-
++#undef max
++#undef min
+ 
+ #include <fstream>
+ #include <math.h>
++#include <cmath>
+ 
+ #include "MSL/geomPQP.h"
+ 
+@@ -156,6 +158,8 @@
+ {
+   std::ifstream fin;
+ 
++	fprintf(stderr, "Reading the environment!\n");
++
+   Obst.clear();
+   fin.open((FilePath+"Obst").c_str());
+   if (fin) {
+@@ -244,10 +248,12 @@
+ 
+   forall(tr,Robot) {
+     // Find maximum effective radius; ignore z distance here
+-    mag = sqrt(sqr(tr->p1.xcoord())+sqr(tr->p1.ycoord()));
++    //mag = sqrt(sqr(tr->p1.xcoord())+sqr(tr->p1.ycoord()));
++    mag = sqrt(pow(tr->p1.xcoord(), 2)+pow(tr->p1.ycoord(), 2));
+     if (mag > dmax) 
+       dmax = mag;
+-    mag = sqrt(sqr(tr->p2.xcoord())+sqr(tr->p2.ycoord()));
++    //mag = sqrt(sqr(tr->p2.xcoord())+sqr(tr->p2.ycoord()));
++    mag = sqrt(pow(tr->p2.xcoord(),2)+pow(tr->p2.ycoord(),2));
+     if (mag > dmax) 
+       dmax = mag;
+   }
+@@ -507,33 +513,42 @@
+ 
+   forall(tr,Robot) {
+     // Check roll deviations
+-    mag = sqrt(sqr(tr->p1.ycoord())+sqr(tr->p1.zcoord()));
++    //mag = sqrt(sqr(tr->p1.ycoord())+sqr(tr->p1.zcoord()));
++    mag = sqrt(pow(tr->p1.ycoord(),2)+pow(tr->p1.zcoord(),2));
+     if (mag > dmax1) 
+       dmax1 = mag;
+-    mag = sqrt(sqr(tr->p2.ycoord())+sqr(tr->p2.zcoord()));
++    //mag = sqrt(sqr(tr->p2.ycoord())+sqr(tr->p2.zcoord()));
++    mag = sqrt(pow(tr->p2.ycoord(),2)+pow(tr->p2.zcoord(),2));
+     if (mag > dmax1) 
+       dmax1 = mag;
+-    mag = sqrt(sqr(tr->p3.ycoord())+sqr(tr->p3.zcoord()));
++    //mag = sqrt(sqr(tr->p3.ycoord())+sqr(tr->p3.zcoord()));
++    mag = sqrt(pow(tr->p3.ycoord(),2)+pow(tr->p3.zcoord(),2));
+     if (mag > dmax1) 
+       dmax1 = mag;
+     // Check pitch deviations
+-    mag = sqrt(sqr(tr->p1.xcoord())+sqr(tr->p1.zcoord()));
++    //mag = sqrt(sqr(tr->p1.xcoord())+sqr(tr->p1.zcoord()));
++    mag = sqrt(pow(tr->p1.xcoord(),2)+pow(tr->p1.zcoord(),2));
+     if (mag > dmax2) 
+       dmax2 = mag;
+-    mag = sqrt(sqr(tr->p2.xcoord())+sqr(tr->p2.zcoord()));
++    //mag = sqrt(sqr(tr->p2.xcoord())+sqr(tr->p2.zcoord()));
++    mag = sqrt(pow(tr->p2.xcoord(),2)+pow(tr->p2.zcoord(),2));
+     if (mag > dmax2) 
+       dmax2 = mag;
+-    mag = sqrt(sqr(tr->p3.xcoord())+sqr(tr->p3.zcoord()));
++    //mag = sqrt(sqr(tr->p3.xcoord())+sqr(tr->p3.zcoord()));
++    mag = sqrt(pow(tr->p3.xcoord(),2)+pow(tr->p3.zcoord(),2));
+     if (mag > dmax2) 
+       dmax2 = mag;
+     // Check yaw deviations
+-    mag = sqrt(sqr(tr->p1.xcoord())+sqr(tr->p1.ycoord()));
++    //mag = sqrt(sqr(tr->p1.xcoord())+sqr(tr->p1.ycoord()));
++    mag = sqrt(pow(tr->p1.xcoord(),2)+pow(tr->p1.ycoord(),2));
+     if (mag > dmax3) 
+       dmax3 = mag;
+-    mag = sqrt(sqr(tr->p2.xcoord())+sqr(tr->p2.ycoord()));
++    //mag = sqrt(sqr(tr->p2.xcoord())+sqr(tr->p2.ycoord()));
++    mag = sqrt(pow(tr->p2.xcoord(),2)+pow(tr->p2.ycoord(),2));
+     if (mag > dmax3) 
+       dmax3 = mag;
+-    mag = sqrt(sqr(tr->p3.xcoord())+sqr(tr->p3.ycoord()));
++    //mag = sqrt(sqr(tr->p3.xcoord())+sqr(tr->p3.ycoord()));
++    mag = sqrt(pow(tr->p3.xcoord(),2)+pow(tr->p3.ycoord(),2));
+     if (mag > dmax3) 
+       dmax3 = mag;
+   }
+diff -rau ../msl-2.0.orig/msl-2.0/src/guiplanner.C src/guiplanner.C
+--- ../msl-2.0.orig/msl-2.0/src/guiplanner.C	2010-01-14 15:23:34.000000000 +0000
++++ src/guiplanner.C	2010-01-14 19:25:25.000000000 +0000
+@@ -169,7 +169,7 @@
+   new FXHorizontalSeparator(this,LAYOUT_SIDE_TOP|SEPARATOR_GROOVE|LAYOUT_FILL_X);
+ 
+   // Install an accelerator
+-  getAccelTable()->addAccel(fxparseaccel("Ctl-Q"),getApp(),MKUINT(-1,SEL_COMMAND));
++  //getAccelTable()->addAccel(fxparseaccel("Ctl-Q"),getApp(),MKUINT(-1,SEL_COMMAND));
+   }
+ 
+ 
+@@ -186,7 +186,8 @@
+ long MSLPlannerWindow::onCmdTimer(FXObject*,FXSelector,void*) {
+   
+   // Reset timer for next time
+-  getApp()->addTimeout(80,this,FXMainWindow::ID_LAST);
++  //getApp()->addTimeout(80,this,FXMainWindow::ID_LAST);
++  getApp()->addTimeout(this,FXMainWindow::ID_LAST,80);
+   return 1;
+ }
+ 
+@@ -199,7 +200,8 @@
+   FXMainWindow::create();
+   
+   // Kick off the timer
+-  getApp()->addTimeout(80,this,FXMainWindow::ID_LAST);
++  //getApp()->addTimeout(80,this,FXMainWindow::ID_LAST);
++  getApp()->addTimeout(this,FXMainWindow::ID_LAST,80);
+ 
+   // Show
+   show(PLACEMENT_SCREEN);
+@@ -222,7 +224,7 @@
+ 
+ // Timer  
+ long MSLPlannerWindow::GeneralHandler(FXObject*,FXSelector sel,void*) {
+-  int i = SELID(sel);
++  int i = FXSELID(sel);
+   //cout << "General Handler  -- selection " << i << "\n";
+ 
+   GP->ButtonHandle(i);
+@@ -472,9 +474,15 @@
+ 
+   FilePath = Pl->P->FilePath;
+ 
+-  CreateMenuWindow();
+ }
+ 
++void GuiPlanner::setArguments( int argc, char** argv )
++{
++	mArgc = argc;
++	mArgv = argv;
++
++  CreateMenuWindow();
++}
+ 
+ 
+ void GuiPlanner::Init() {
+@@ -526,16 +534,14 @@
+ void GuiPlanner::CreateMenuWindow() {
+ 
+   // Make some dummy arg stuff to make FOX happy...
+-  int argc;
+-  char* argv[1];
+-  argc = 0;
+-  argv[0] = NULL;
++  //int argc;
++  //char* argv[1];
+ 
+   // Make application
+   //FXApp application("DataTarget","FoxTest");
+   
+   // Open display (multiple inheritance from FXApp)
+-  init(argc,argv);
++  init(mArgc,mArgv);
+   
+   // Main window
+   Window=new MSLPlannerWindow(this);
+diff -rau ../msl-2.0.orig/msl-2.0/src/model2d.C src/model2d.C
+--- ../msl-2.0.orig/msl-2.0/src/model2d.C	2010-01-14 15:23:34.000000000 +0000
++++ src/model2d.C	2010-01-14 19:25:25.000000000 +0000
+@@ -193,7 +193,8 @@
+   
+   dtheta = min(fabs(x1[2]-x2[2]),2.0*PI - fabs(x1[2]-x2[2]));
+ 
+-  rho = sqrt(sqr(x1[0] - x2[0]) + sqr(x1[1] - x2[1]) + 50.0/PI*sqr(dtheta));
++  //rho = sqrt(sqr(x1[0] - x2[0]) + sqr(x1[1] - x2[1]) + 50.0/PI*sqr(dtheta));
++  rho = sqrt(pow(x1[0] - x2[0],2) + pow(x1[1] - x2[1],2) + 50.0/PI*pow(dtheta,2));
+ 
+   return rho;
+ }
+@@ -265,7 +266,8 @@
+   double fd = fabs(x1[2]-x2[2]);
+   double dtheta = min(fd,2.0*PI - fd);
+ 
+-  return sqrt(sqr(x1[0] - x2[0]) + sqr(x1[1] - x2[1]) + sqr(50.0/PI*dtheta));
++  //return sqrt(sqr(x1[0] - x2[0]) + sqr(x1[1] - x2[1]) + sqr(50.0/PI*dtheta));
++  return sqrt(pow(x1[0] - x2[0],2) + pow(x1[1] - x2[1],2) + pow(50.0/PI*dtheta,2));
+ 
+ }
+ 
+@@ -465,9 +467,14 @@
+   dphi = min(fabs(x1[3]-x2[3]),2.0*PI - fabs(x1[3]-x2[3]));
+   dtheta = min(fabs(x1[2]-x2[2]),2.0*PI - fabs(x1[2]-x2[2]));
+ 
+-  rho = sqrt(sqr(x1[0] - x2[0]) + sqr(x1[1] - x2[1]) +
+-    sqr(2.0/PI*dphi) +
+-    sqr(50.0/PI*dtheta));
++  //rho = sqrt(sqr(x1[0] - x2[0]) + sqr(x1[1] - x2[1]) +
++    //sqr(2.0/PI*dphi) +
++    //sqr(50.0/PI*dtheta));
++
++  rho = sqrt(pow(x1[0] - x2[0],2) + pow(x1[1] - x2[1],2) +
++    pow(2.0/PI*dphi,2) +
++    pow(50.0/PI*dtheta,2));
++
+ 
+   return rho;
+ }
+@@ -545,11 +552,18 @@
+   dtheta = min(fabs(x1[2]-x2[2]),2.0*PI - fabs(x1[2]-x2[2]));
+   dtheta1 = min(fabs(x1[4]-x2[4]),2.0*PI - fabs(x1[4]-x2[4]));
+ 
+-  rho = sqrt(sqr(x1[0] - x2[0]) + 
+-	     sqr(x1[1] - x2[1]) +
+-	     sqr(2.0/PI*dphi) +
+-	     sqr(5.0/PI*dtheta) +
+-	     sqr(5.0/PI*dtheta1));
++  //rho = sqrt(sqr(x1[0] - x2[0]) + 
++	     //sqr(x1[1] - x2[1]) +
++	     //sqr(2.0/PI*dphi) +
++	     //sqr(5.0/PI*dtheta) +
++	     //sqr(5.0/PI*dtheta1));
++
++ rho = sqrt(pow(x1[0] - x2[0],2) + 
++	     pow(x1[1] - x2[1],2) +
++	     pow(2.0/PI*dphi,2) +
++	     pow(5.0/PI*dtheta,2) +
++	     pow(5.0/PI*dtheta1,2));
++
+ 
+   return rho;
+ }
+@@ -636,11 +650,17 @@
+   dtheta1 = min(fabs(x1[4]-x2[4]),2.0*PI - fabs(x1[4]-x2[4]));
+   dtheta2 = min(fabs(x1[5]-x2[5]),2.0*PI - fabs(x1[5]-x2[5]));
+ 
+-  rho = sqrt(sqr(x1[0] - x2[0]) + sqr(x1[1] - x2[1]) +
+-    sqr(2.0/PI*dphi) +
+-    sqr(5.0/PI*dtheta) +
+-    sqr(5.0/PI*dtheta1) +
+-    sqr(5.0/PI*dtheta2));
++  //rho = sqrt(sqr(x1[0] - x2[0]) + sqr(x1[1] - x2[1]) +
++    //sqr(2.0/PI*dphi) +
++    //sqr(5.0/PI*dtheta) +
++    //sqr(5.0/PI*dtheta1) +
++    //sqr(5.0/PI*dtheta2));
++rho = sqrt(pow(x1[0] - x2[0],2) + pow(x1[1] - x2[1],2) +
++    pow(2.0/PI*dphi,2) +
++    pow(5.0/PI*dtheta,2) +
++    pow(5.0/PI*dtheta1,2) +
++    pow(5.0/PI*dtheta2,2));
++
+ 
+   return rho;
+ }
+@@ -736,12 +756,19 @@
+   dtheta2 = min(fabs(x1[5]-x2[5]),2.0*PI - fabs(x1[5]-x2[5]));
+   dtheta3 = min(fabs(x1[6]-x2[6]),2.0*PI - fabs(x1[6]-x2[6]));
+ 
+-  rho = sqrt(sqr(x1[0] - x2[0]) + sqr(x1[1] - x2[1]) +
+-    sqr(2.0/PI*dphi) +
+-    sqr(5.0/PI*dtheta) +
+-    sqr(5.0/PI*dtheta1) +
+-    sqr(5.0/PI*dtheta2) +
+-    sqr(5.0/PI*dtheta3));
++  //rho = sqrt(sqr(x1[0] - x2[0]) + sqr(x1[1] - x2[1]) +
++    //sqr(2.0/PI*dphi) +
++    //sqr(5.0/PI*dtheta) +
++    //sqr(5.0/PI*dtheta1) +
++    //sqr(5.0/PI*dtheta2) +
++    //sqr(5.0/PI*dtheta3));
++rho = sqrt(pow(x1[0] - x2[0],2) + pow(x1[1] - x2[1],2) +
++    pow(2.0/PI*dphi,2) +
++    pow(5.0/PI*dtheta,2) +
++    pow(5.0/PI*dtheta1,2) +
++    pow(5.0/PI*dtheta2,2) +
++    pow(5.0/PI*dtheta3,2));
++
+ 
+   return rho;
+ }
+@@ -886,15 +913,20 @@
+   double d;
+ 
+   // Position difference
+-  d =  sqr((x1[2] - x2[2]) / (UpperState[2] - LowerState[2]));
+-  d += sqr((x1[3] - x2[3]) / (UpperState[3] - LowerState[3]));
++  //d =  sqr((x1[2] - x2[2]) / (UpperState[2] - LowerState[2]));
++  d =  pow((x1[2] - x2[2]) / (UpperState[2] - LowerState[2]),2);
++  //d += sqr((x1[3] - x2[3]) / (UpperState[3] - LowerState[3]));
++  d += pow((x1[3] - x2[3]) / (UpperState[3] - LowerState[3]),2);
+ 
+   // Orientation difference
+-  d += sqr(min(fabs(x1[4]-x2[4]),2.0*PI - fabs(x1[4]-x2[4]))/2.0/PI);
++  //d += sqr(min(fabs(x1[4]-x2[4]),2.0*PI - fabs(x1[4]-x2[4]))/2.0/PI);
++  d += pow(min(fabs(x1[4]-x2[4]),2.0*PI - fabs(x1[4]-x2[4]))/2.0/PI, 2);
+ 
+   // Velocities
+-  d += sqr((x1[0] - x2[0]) / (UpperState[0] - LowerState[0]));
+-  d += sqr((x1[1] - x2[1]) / (UpperState[1] - LowerState[1]));
++  //d += sqr((x1[0] - x2[0]) / (UpperState[0] - LowerState[0]));
++  d += pow((x1[0] - x2[0]) / (UpperState[0] - LowerState[0]),2);
++  //d += sqr((x1[1] - x2[1]) / (UpperState[1] - LowerState[1]));
++  d += pow((x1[1] - x2[1]) / (UpperState[1] - LowerState[1]),2);
+ 
+ 
+   return sqrt(d);
+@@ -1146,7 +1178,8 @@
+   int i;
+ 
+   for (i = 0; i < 4; i++) {
+-    d += sqrt(sqr(x1[i] - x2[i]) / (UpperState[i] - LowerState[i]));
++    //d += sqrt(sqr(x1[i] - x2[i]) / (UpperState[i] - LowerState[i]));
++    d += sqrt(pow(x1[i] - x2[i],2) / (UpperState[i] - LowerState[i]));
+   }
+   
+   //cout << "x1: " << x1 << "  x2: " << x2 << "   Metric: " << d << "\n";
+@@ -1200,9 +1233,12 @@
+   for (i = 0; i < NumBodies; i++) {
+     fd = fabs(x1[3*i+2]-x2[3*i+2]);
+     dtheta = min(fd,2.0*PI - fd);
+-    d += sqr(x1[3*i] - x2[3*i]);
+-    d += sqr(x1[3*i+1] - x2[3*i+1]);
+-    d += sqr(dtheta);
++    //d += sqr(x1[3*i] - x2[3*i]);
++    d += pow(x1[3*i] - x2[3*i],2);
++    //d += sqr(x1[3*i+1] - x2[3*i+1]);
++    d += pow(x1[3*i+1] - x2[3*i+1],2);
++    //d += sqr(dtheta);
++    d += pow(dtheta,2);
+   }
+ 
+   return sqrt(d);
+@@ -1368,11 +1404,13 @@
+   MSLVector dtheta(StateDim);
+   int i;
+   
+-  rho = sqr(x1[0] - x2[0]) + sqr(x1[1] - x2[1]);
++  //rho = sqr(x1[0] - x2[0]) + sqr(x1[1] - x2[1]);
++  rho = pow(x1[0] - x2[0],2) + pow(x1[1] - x2[1],2);
+ 
+   for (i = 2; i < StateDim; i++) {
+     dtheta[i] = min(fabs(x1[i]-x2[i]),2.0*PI - fabs(x1[i]-x2[i]));
+-    rho += sqr(50.0/PI*dtheta[i]);
++    //rho += sqr(50.0/PI*dtheta[i]);
++    rho += pow(50.0/PI*dtheta[i],2);
+   }
+ 
+   rho = sqrt(rho);
+diff -rau ../msl-2.0.orig/msl-2.0/src/model3d.C src/model3d.C
+--- ../msl-2.0.orig/msl-2.0/src/model3d.C	2010-01-14 15:23:34.000000000 +0000
++++ src/model3d.C	2010-01-14 19:25:25.000000000 +0000
+@@ -153,9 +153,16 @@
+   double dtheta3 = min(fd,2.0*PI - fd);
+   
+   //note: this assumes a certain scaling of the environment!
+-  return sqrt(sqr(x1[0] - x2[0]) + sqr(x1[1] - x2[1]) + sqr(x1[2] - x2[2]) +
+-  	      sqr(50.0/PI*dtheta1) + sqr(50.0/PI*dtheta2) +
+-  	      sqr(50.0/PI*dtheta3));
++  //return sqrt(sqr(x1[0] - x2[0]) + sqr(x1[1] - x2[1]) + sqr(x1[2] - x2[2]) +
++                //sqr(50.0/PI*dtheta1) + sqr(50.0/PI*dtheta2) +
++                //sqr(50.0/PI*dtheta3));
++  
++   return sqrt(pow(x1[0] - x2[0],2) + pow(x1[1] - x2[1],2) + pow(x1[2] - x2[2],2) +
++  	      pow(50.0/PI*dtheta1,2) + pow(50.0/PI*dtheta2,2) +
++  	      pow(50.0/PI*dtheta3,2));
++  
++  
++  
+   //  return sqrt(sqr(x1[0] - x2[0]) + sqr(x1[1] - x2[1]) + sqr(x1[2] - x2[2]) +
+   //	      sqr(dtheta1) + sqr(dtheta2) +
+   //	      sqr(dtheta3));
+@@ -304,12 +311,22 @@
+     dtheta2 = min(fd,2.0*PI - fd);
+     fd = fabs(x1[6*i+5]-x2[6*i+5]);
+     dtheta3 = min(fd,2.0*PI - fd);
+-    d += sqr(x1[6*i] - x2[6*i]);
+-    d += sqr(x1[6*i+1] - x2[6*i+1]);
+-    d += sqr(x1[6*i+2] - x2[6*i+2]);
+-    d += sqr(dtheta1);
+-    d += sqr(dtheta2);
+-    d += sqr(dtheta3);
++    //d += sqr(x1[6*i] - x2[6*i]);
++    //d += sqr(x1[6*i+1] - x2[6*i+1]);
++    //d += sqr(x1[6*i+2] - x2[6*i+2]);
++    //d += sqr(dtheta1);
++    //d += sqr(dtheta2);
++    //d += sqr(dtheta3);
++    
++    d += pow(x1[6*i] - x2[6*i],2);
++    d += pow(x1[6*i+1] - x2[6*i+1],2);
++    d += pow(x1[6*i+2] - x2[6*i+2],2);
++    d += pow(dtheta1,2);
++    d += pow(dtheta2,2);
++    d += pow(dtheta3,2);
++    
++    
++
+   }
+ 
+   return sqrt(d);
+@@ -536,7 +553,9 @@
+     q[6*i+1] = r[1][3];
+     q[6*i+2] = r[2][3];
+ 
+-    q[6*i+4] = atan2(  -r[2][0], sqrt(sqr(r[0][0])+sqr(r[1][0]))  );
++    //q[6*i+4] = atan2(  -r[2][0], sqrt(sqr(r[0][0])+sqr(r[1][0]))  );
++    q[6*i+4] = atan2(  -r[2][0], sqrt(pow(r[0][0],2)+pow(r[1][0],2))  );
++    
+     if ( (q[6*i+4]>0.0) && (cos(q[6*i+4])==0.0) ) {
+       q[6*i+5] = 0.0;
+       q[6*i+3] = atan2(r[0][1], r[1][1]);
+@@ -587,11 +606,13 @@
+   rho = 0.0;
+   for ( i= 0 ; i < StateDim; i++){
+     if (StateIndices[i] > 2*NumBodies) { 
+-      rho += sqr(x1[i] - x2[i]);
++      //rho += sqr(x1[i] - x2[i]);
++      rho += pow(x1[i] - x2[i],2);
+     }
+     else { 
+       dtheta[i] = min(fabs(x1[i]-x2[i]),2.0*PI - fabs(x1[i]-x2[i]));
+-      rho += sqr(10.0/PI*dtheta[i]);
++      //rho += sqr(10.0/PI*dtheta[i]);
++      rho += pow(10.0/PI*dtheta[i],2);
+     }
+   }
+   rho = sqrt(rho);
+@@ -773,7 +794,8 @@
+     q[6*i+1] = r[1][3];
+     q[6*i+2] = r[2][3];
+ 
+-    q[6*i+4] = atan2(  -r[2][0], sqrt(sqr(r[0][0])+sqr(r[1][0]))  );
++    //q[6*i+4] = atan2(  -r[2][0], sqrt(sqr(r[0][0])+sqr(r[1][0]))  );
++    q[6*i+4] = atan2(  -r[2][0], sqrt(pow(r[0][0],2)+pow(r[1][0],2))  );
+     if ( (q[6*i+4]>0.0) && (cos(q[6*i+4])==0.0) ) {
+       q[6*i+5] = 0.0;
+       q[6*i+3] = atan2(r[0][1], r[1][1]);
+@@ -821,11 +843,13 @@
+   rho = 0.0;
+   for (i = 0 ; i < StateDim; i++){
+     if (StateIndices[i] > 2*NumBodies) {
+-      rho += sqr(x1[i] - x2[i]);
++      //rho += sqr(x1[i] - x2[i]);
++      rho += pow(x1[i] - x2[i],2);
+     }
+     else { 
+       dtheta[i] = min(fabs(x1[i]-x2[i]),2.0*PI - fabs(x1[i]-x2[i]));
+-      rho += sqr(10.0/PI*dtheta[i]);
++      //rho += sqr(10.0/PI*dtheta[i]);
++      rho += pow(10.0/PI*dtheta[i],2);
+     }
+   }
+   rho = sqrt(rho);
+diff -rau ../msl-2.0.orig/msl-2.0/src/modelcar.C src/modelcar.C
+--- ../msl-2.0.orig/msl-2.0/src/modelcar.C	2010-01-14 15:23:34.000000000 +0000
++++ src/modelcar.C	2010-01-14 19:25:25.000000000 +0000
+@@ -166,15 +166,20 @@
+   double d;
+ 
+   // Position difference
+-  d =  sqr((x1[2] - x2[2]) / (UpperState[2] - LowerState[2])) * 16.0;
+-  d += sqr((x1[3] - x2[3]) / (UpperState[3] - LowerState[3])) * 16.0;
++  //d =  sqr((x1[2] - x2[2]) / (UpperState[2] - LowerState[2])) * 16.0;
++  d =  pow((x1[2] - x2[2]) / (UpperState[2] - LowerState[2]),2) * 16.0;
++  //d += sqr((x1[3] - x2[3]) / (UpperState[3] - LowerState[3])) * 16.0;
++  d += pow((x1[3] - x2[3]) / (UpperState[3] - LowerState[3]),2) * 16.0;
+ 
+   // Orientation difference
+-  d += sqr(min(fabs(x1[4]-x2[4]),2.0*PI - fabs(x1[4]-x2[4]))/2.0/PI) * 16.0;
++  //d += sqr(min(fabs(x1[4]-x2[4]),2.0*PI - fabs(x1[4]-x2[4]))/2.0/PI) * 16.0;
++  d += pow(min(fabs(x1[4]-x2[4]),2.0*PI - fabs(x1[4]-x2[4]))/2.0/PI,2) * 16.0;
+ 
+   // Velocities
+-  d += sqr((x1[0] - x2[0]) / (UpperState[0] - LowerState[0]));
+-  d += sqr((x1[1] - x2[1]) / (UpperState[1] - LowerState[1]));
++  //d += sqr((x1[0] - x2[0]) / (UpperState[0] - LowerState[0]));
++  d += pow((x1[0] - x2[0]) / (UpperState[0] - LowerState[0]),2);
++  //d += sqr((x1[1] - x2[1]) / (UpperState[1] - LowerState[1]));
++  d += pow((x1[1] - x2[1]) / (UpperState[1] - LowerState[1]),2);
+ 
+ 
+   return sqrt(d);
+@@ -225,15 +230,20 @@
+   double d;
+ 
+   // Position difference
+-  d =  sqr((x1[2] - x2[2]) / (UpperState[2] - LowerState[2])) * 16.0;
+-  d += sqr((x1[3] - x2[3]) / (UpperState[3] - LowerState[3])) * 16.0;
++  //d =  sqr((x1[2] - x2[2]) / (UpperState[2] - LowerState[2])) * 16.0;
++  d =  pow((x1[2] - x2[2]) / (UpperState[2] - LowerState[2]),2) * 16.0;
++  //d += sqr((x1[3] - x2[3]) / (UpperState[3] - LowerState[3])) * 16.0;
++  d += pow((x1[3] - x2[3]) / (UpperState[3] - LowerState[3]),2) * 16.0;
+ 
+   // Orientation difference
+-  d += sqr(min(fabs(x1[4]-x2[4]),2.0*PI - fabs(x1[4]-x2[4]))/2.0/PI) * 16.0;
++  //d += sqr(min(fabs(x1[4]-x2[4]),2.0*PI - fabs(x1[4]-x2[4]))/2.0/PI) * 16.0;
++  d += pow(min(fabs(x1[4]-x2[4]),2.0*PI - fabs(x1[4]-x2[4]))/2.0/PI,2) * 16.0;
+ 
+   // Velocities
+-  d += sqr((x1[0] - x2[0]) / (UpperState[0] - LowerState[0]));
+-  d += sqr((x1[1] - x2[1]) / (UpperState[1] - LowerState[1]));
++  //d += sqr((x1[0] - x2[0]) / (UpperState[0] - LowerState[0]));
++  d += pow((x1[0] - x2[0]) / (UpperState[0] - LowerState[0]),2);
++  //d += sqr((x1[1] - x2[1]) / (UpperState[1] - LowerState[1]));
++  d += pow((x1[1] - x2[1]) / (UpperState[1] - LowerState[1]),2);
+ 
+ 
+   return sqrt(d);
+@@ -276,7 +286,8 @@
+   IsRollOver = false;
+ 
+   K = Mass*9.8*H2*(1+Fai)/Fai;
+-  Ixx = (K-Mass*9.8*H2)/sqr(Wn*2*3.1415926);
++  //Ixx = (K-Mass*9.8*H2)/sqr(Wn*2*3.1415926);
++  Ixx = (K-Mass*9.8*H2)/pow(Wn*2*3.1415926,2);
+   c = Wn*2*sqrt((K-Mass*9.8*H2)*Ixx);
+ 
+   Mu = 0.6;
+@@ -447,19 +458,27 @@
+   double d;
+ 
+   // Position difference
+-  d =  sqr((x1[2] - x2[2]) / (UpperState[2] - LowerState[2])) * 25.0;
+-  d += sqr((x1[3] - x2[3]) / (UpperState[3] - LowerState[3])) * 25.0;
++  //d =  sqr((x1[2] - x2[2]) / (UpperState[2] - LowerState[2])) * 25.0;
++  d =  pow((x1[2] - x2[2]) / (UpperState[2] - LowerState[2]),2) * 25.0;
++  //d += sqr((x1[3] - x2[3]) / (UpperState[3] - LowerState[3])) * 25.0;
++  d += pow((x1[3] - x2[3]) / (UpperState[3] - LowerState[3]),2) * 25.0;
+ 
+   // Orientation difference
+-  d += sqr(min(fabs(x1[4]-x2[4]),2.0*PI - fabs(x1[4]-x2[4]))/2.0/PI) * 36.0;
++  //d += sqr(min(fabs(x1[4]-x2[4]),2.0*PI - fabs(x1[4]-x2[4]))/2.0/PI) * 36.0;
++  d += pow(min(fabs(x1[4]-x2[4]),2.0*PI - fabs(x1[4]-x2[4]))/2.0/PI,2) * 36.0;
+ 
+   // Velocities
+-  d += sqr((x1[0] - x2[0]) / (UpperState[0] - LowerState[0]));
+-  d += sqr((x1[1] - x2[1]) / (UpperState[1] - LowerState[1]));
+-
+-  d += sqr((x1[5] - x2[5]) / (UpperState[5] - LowerState[5]));
+-  d += sqr((x1[6] - x2[6]) / (UpperState[6] - LowerState[6]));
+-  d += sqr((x1[7] - x2[7]) / (UpperState[7] - LowerState[7]));
++  //d += sqr((x1[0] - x2[0]) / (UpperState[0] - LowerState[0]));
++  d += pow((x1[0] - x2[0]) / (UpperState[0] - LowerState[0]),2);
++  //d += sqr((x1[1] - x2[1]) / (UpperState[1] - LowerState[1]));
++  d += pow((x1[1] - x2[1]) / (UpperState[1] - LowerState[1]),2);
++
++  //d += sqr((x1[5] - x2[5]) / (UpperState[5] - LowerState[5]));
++  d += pow((x1[5] - x2[5]) / (UpperState[5] - LowerState[5]),2);
++  //d += sqr((x1[6] - x2[6]) / (UpperState[6] - LowerState[6]));
++  d += pow((x1[6] - x2[6]) / (UpperState[6] - LowerState[6]),2);
++  //d += sqr((x1[7] - x2[7]) / (UpperState[7] - LowerState[7]));
++  d += pow((x1[7] - x2[7]) / (UpperState[7] - LowerState[7]),2);
+ 
+   return sqrt(d);
+ }
+@@ -652,20 +671,29 @@
+   double d;
+ 
+   // Position difference
+-  d =  sqr((x1[2] - x2[2]) / (UpperState[2] - LowerState[2])); // * 25.0;
+-  d += sqr((x1[3] - x2[3]) / (UpperState[3] - LowerState[3])); // * 25.0;
++  //d =  sqr((x1[2] - x2[2]) / (UpperState[2] - LowerState[2])); // * 25.0;
++  d =  pow((x1[2] - x2[2]) / (UpperState[2] - LowerState[2]),2); // * 25.0;
++  //d += sqr((x1[3] - x2[3]) / (UpperState[3] - LowerState[3])); // * 25.0;
++  d += pow((x1[3] - x2[3]) / (UpperState[3] - LowerState[3]),2); // * 25.0;
+ 
+   // Orientation difference
+-  d += sqr(min(fabs(x1[4]-x2[4]),2.0*PI - fabs(x1[4]-x2[4]))/2.0/PI);// * 36.0;
++  //d += sqr(min(fabs(x1[4]-x2[4]),2.0*PI - fabs(x1[4]-x2[4]))/2.0/PI);// * 36.0;
++  d += pow(min(fabs(x1[4]-x2[4]),2.0*PI - fabs(x1[4]-x2[4]))/2.0/PI,2);// * 36.0;
+ 
+   // Velocities
+-  d += sqr((x1[0] - x2[0]) / (UpperState[0] - LowerState[0]));
+-  d += sqr((x1[1] - x2[1]) / (UpperState[1] - LowerState[1]));
+-
+-  d += sqr((x1[5] - x2[5]) / (UpperState[5] - LowerState[5]));
+-  d += sqr((x1[6] - x2[6]) / (UpperState[6] - LowerState[6]));
+-  d += sqr((x1[7] - x2[7]) / (UpperState[7] - LowerState[7]));
+-  d += sqr((x1[8] - x2[8]) / (UpperState[8] - LowerState[8]));
++  //d += sqr((x1[0] - x2[0]) / (UpperState[0] - LowerState[0]));
++  d += pow((x1[0] - x2[0]) / (UpperState[0] - LowerState[0]),2);
++  //d += sqr((x1[1] - x2[1]) / (UpperState[1] - LowerState[1]));
++  d += pow((x1[1] - x2[1]) / (UpperState[1] - LowerState[1]),2);
++
++  //d += sqr((x1[5] - x2[5]) / (UpperState[5] - LowerState[5]));
++  d += pow((x1[5] - x2[5]) / (UpperState[5] - LowerState[5]),2);
++  //d += sqr((x1[6] - x2[6]) / (UpperState[6] - LowerState[6]));
++  d += pow((x1[6] - x2[6]) / (UpperState[6] - LowerState[6]),2);
++  //d += sqr((x1[7] - x2[7]) / (UpperState[7] - LowerState[7]));
++  d += pow((x1[7] - x2[7]) / (UpperState[7] - LowerState[7]),2);
++  //d += sqr((x1[8] - x2[8]) / (UpperState[8] - LowerState[8]));
++  d += pow((x1[8] - x2[8]) / (UpperState[8] - LowerState[8]),2);
+ 
+   return sqrt(d);
+ }
+diff -rau ../msl-2.0.orig/msl-2.0/src/modelmisc.C src/modelmisc.C
+--- ../msl-2.0.orig/msl-2.0/src/modelmisc.C	2010-01-14 15:23:34.000000000 +0000
++++ src/modelmisc.C	2010-01-14 19:25:25.000000000 +0000
+@@ -112,7 +112,8 @@
+   int i;
+ 
+   for (i = 0; i < 2; i++) {
+-    d += sqr(x1[i] - x2[i]) / (UpperState[i] - LowerState[i]);
++    //d += sqr(x1[i] - x2[i]) / (UpperState[i] - LowerState[i]);
++    d += pow(x1[i] - x2[i],2) / (UpperState[i] - LowerState[i]);
+   }
+   
+   //cout << "x1: " << x1 << "  x2: " << x2 << "   Metric: " << d << "\n";
+diff -rau ../msl-2.0.orig/msl-2.0/src/plangl.C src/plangl.C
+--- ../msl-2.0.orig/msl-2.0/src/plangl.C	2010-01-14 15:23:34.000000000 +0000
++++ src/plangl.C	2010-01-14 19:32:29.000000000 +0000
+@@ -61,6 +61,8 @@
+ {
+   string path;
+   GuiPlanner *gui;
++
++
+   Model *m = NULL;
+   Geom *g = NULL;
+   Problem *prob;
+@@ -92,6 +94,8 @@
+   gui = new GuiPlanner(new RenderGL(new Scene(prob, path), path),
+ 		       new RRTConCon(prob));
+ 
++  gui->setArguments( argc, argv );
++  
+   gui->Start();
+ 
+   return 0;
