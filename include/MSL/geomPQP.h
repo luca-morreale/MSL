@@ -54,7 +54,7 @@
 #include <vector>
 
 //#include "../../configs/configPQP.h"
-#include </home/roomba/Documents/tri/MSLlibrary/pqp/include/PQP.h>
+#include <PQP.h>
 
 #include <cstdlib>
 #include <cstdio>
